@@ -18,18 +18,20 @@ export const fetchEmployees=()=>dispatch=>{
 }
 export const createEmployee=(data)=>dispatch=>{
     console.log("||>----------------------------------<||","create Action",data,JSON.stringify(data))
-    fetch("https://jsonplaceholder.typicode.com/posts", {
-        method: 'POST',
-        headers:{
-            'content-type':'application/json',
-            'Accept': 'application/json'
-        },
-        body: JSON.stringify(data)
-    })
-    .then(response => response.json()).then(employee=> dispatch({
-        type:ADD_EMPLOYEE,
-        payload:employee
-    })).catch(err=>console.log(err)); 
+    // fetch("https://jsonplaceholder.typicode.com/posts", {
+    //     method: 'POST',
+    //     headers:{
+    //         'content-type':'application/json',
+    //         'Accept': 'application/json'
+    //     },
+    //     body: JSON.stringify(data)
+    // })
+    // .then(response => response.json()).then(employee=> dispatch({
+    //     type:ADD_EMPLOYEE,
+    //     payload:employee
+    // })).catch(err=>console.log(err)); 
+    axios.post('http://dummy.restapiexample.com/api/v1/create/', JSON.stringify(data))
+	.then(res => console.log(res.data)).catch(err=>console.log(err));
 }
 
 export const deleteEmployees=(id)=>dispatch=>{
@@ -39,6 +41,6 @@ export const deleteEmployees=(id)=>dispatch=>{
 }
 export const updateEmployees=(id,employee)=>dispatch=>{
     console.log("||>----------------------------------<||","Update Action",id, employee);
-    axios.put('http://dummy.restapiexample.com/api/v1/update/'+id, employee)
+    axios.put('http://dummy.restapiexample.com/api/v1/update/'+id, JSON.stringify(employee))
     .then(res => console.log(res.data)).catch(err=>console.log(err,"---------------------------------------"));
 }
