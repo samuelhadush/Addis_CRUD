@@ -10,7 +10,6 @@ import  store  from "./store";
 import { fetchEmployees,createEmployee,deleteEmployees } from "./actions/employeeActions";
 import CreateEmployee from "./components/createEmployee";
 
-
 class App extends Component {
   constructor(props){
     super(props);
@@ -26,48 +25,26 @@ class App extends Component {
     this.props.fetchEmployees();
   }
   componentWillReceiveProps(nextProps){
+
     if(nextProps.newEmployee){
-      this.props.employees.unshift(nextProps.newEmployee);
+     let newEmp= {
+        employee_name:nextProps.newEmployee.name,
+        employee_age:nextProps.newEmployee.age,
+        employee_salary:nextProps.newEmployee.salary
+       }
+      // let {name:employee_name,salary:employee_salary,age:employee_age}=newEmp;
+      this.props.employees.unshift(newEmp);
     }
+    // if(nextProps.updatedEmployee){
+    //   this.props.employees.unshift(nextProps.updatedEmployee);
+    // }
   }
   componentDidMount=()=>{
-    // fetch("	http://dummy.restapiexample.com/api/v1/employees")
-    // .then(res => res.json())
-    // .then(res => this.setState({ employees: res },()=>{
-    //   console.log(this.state.employees)
-    //     // this.state.employees.map(item=>{
-    //     //   console.log(item);
-    //     // });
-    // }))
-    // .catch(() => this.setState({ hasErrors: true }));
-    // console.log("before Fetch called")
-    // this.props.fetchEmployees();
-  }
-  postData=(url = '', data = {})=> {
-    // this.props.createEmployee(this.state.data);
-      // return fetch(url, {
-      //     method: 'POST', // *GET, POST, PUT, DELETE, etc.
-      //     body: JSON.stringify(data), // body data type must match "Content-Type" header
-      // })
-      // .then(response => response.json()); // parses JSON response into native JavaScript objects 
-  }
-  updateData=(record)=> {
-    // Default options are marked with *
-      return fetch("https://jsonplaceholder.typicode.com/posts/"+record.id, {
-          method: 'PUT', // *GET, POST, PUT, DELETE, etc.
-          body: JSON.stringify(record), // body data type must match "Content-Type" header
-      })
-      .then(response => response.json()); // parses JSON response into native JavaScript objects 
   }
 
   deleteEmployee=(record)=>{
-    console.log(record);
-    // fetch("https://jsonplaceholder.typicode.com/posts/"+record.id.toString(),{
-    //   method:'DELETE'
-    // }).then(response=>response.json()).then(response=>console.log('employee deleted'))
-    // axios.delete("http://dummy.restapiexample.com/api/v1/delete/"+record.id)
-    // .then(res => console.log(res.data));
     this.props.deleteEmployees(record.id);
+    this.props.fetchEmployees();
   }
   showModal = () => {
     this.setState({
@@ -82,26 +59,9 @@ class App extends Component {
     });
   };
   onChange=e=>{
-    console.log(e);
-   let newdata={...this.state.data}
-    console.log(e.target.name,e.target.value)
-    // newdata.e.target.name.toString()=e.target.value;
-    // console.log(newdata);
-    // this.setState({employee_name:e});
     this.setState({[e.target.name]:e.target.target});
-    // this.setState({data:{[e.target.name]:e.target.value}},()=>console.log(this.state.data));
   }
 
-  handleSubmit=()=>{
-    const employeeInfo={
-      employee_name:this.state.employee_name,
-      employee_age:this.state.employee_age,
-      employee_salary:this.state.employee_salary
-    }
-    console.log(employeeInfo);
-    // this.props.createEmployee(employeeInfo);
-
-  }
   handleCancel = e => {
     this.setState({
       visible: false,
@@ -143,6 +103,9 @@ class App extends Component {
         title: 'Salary',
         dataIndex: 'employee_salary',
         key: 'salary',
+        // sorter: (a, b) => a.salary - b.salary,
+        // sortOrder: "salary" === 'employee_salary' && {"order":'descend',"columnKey":"salary"},
+
       },
       {
         title: 'Action',
@@ -171,11 +134,6 @@ class App extends Component {
            </div>,
       }
     ];
-   let data=[ ...this.state.employees];
-   let create="http://dummy.restapiexample.com/api/v1/create";
-   let update="http://dummy.restapiexample.com/api/v1/update/21";
-   let delete1="http://dummy.restapiexample.com/api/v1/update/2";
-   let find="	http://dummy.restapiexample.com/api/v1/employee/1";
     return (
       // <Provider store={store}>
       <div style={{paddingTop:"30px",paddingBottom:"10px",paddingLeft:"30px", paddingRight:"30px"}}>
@@ -184,22 +142,26 @@ class App extends Component {
         </Button>
         <Table columns={columns}  dataSource={this.props.employees} size="middle" />
         <Modal
-          title={this.state.data!={}?"Employee":"Employee"}
+          title="Add Employee"
           visible={this.state.visible}
+          // forceRender={true}
           // onOk={this.handleOk}
+          destroyOnClose={true}
           onCancel={this.handleCancel}
           footer={null}
         >
-          <CreateEmployee  update={false} />
+          <CreateEmployee  update={false} cancel={this.handleCancel} />
         </Modal>
         <Modal
           title="Update Employee"
           visible={this.state.updatevisible}
           // onOk={this.handleOk}
+          // forceRender={true}
+          destroyOnClose={true}
           onCancel={this.handleCancel}
           footer={null}
         >
-          <CreateEmployee data={this.state.editdata} update={true} />
+          <CreateEmployee data={this.state.editdata} update={true} cancel={this.handleCancel} />
         </Modal>
       </div>
       // </Provider>
@@ -211,11 +173,15 @@ App.propTypes={
   fetchEmployees:PropTypes.func.isRequired,
   deleteEmployees:PropTypes.func.isRequired,
   employees:PropTypes.array.isRequired,
-  newEmployee:PropTypes.object
+  newEmployee:PropTypes.object,
+  updatedEmployee:PropTypes.object
+
 }
 const mapStateToProps=(state)=>{
   return {
-    employees:state.employee.items
+    employees:state.employee.items,
+    newEmployee:state.employee.item,
+    updatedEmployee:state.employee.update
   }
 }
 const mapDispachProps=(dispach)=>{
@@ -225,4 +191,3 @@ const mapDispachProps=(dispach)=>{
   }
 }
 export default connect(mapStateToProps,{fetchEmployees, deleteEmployees})(App);
-// export default connect(mapStateToProps,mapDispachProps)(App);

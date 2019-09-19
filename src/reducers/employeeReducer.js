@@ -1,11 +1,7 @@
 import  {FETCH_EMPLOYEE,ADD_EMPLOYEE,UPDATE_EMPLOYEE,DELETE_EMPLOYEE} from '../actions/types';
 import { stat } from 'fs';
-const initialState={
-    // employees:[],
-    // employee:{}
-}
+const initialState={}
 export default function(state=initialState,action){
-    // console.log(...state);
     switch(action.type){
         case FETCH_EMPLOYEE:
             console.log("Get Employee")
@@ -25,7 +21,7 @@ export default function(state=initialState,action){
             }
         case UPDATE_EMPLOYEE:
             return {
-                ...state,item:action.payload
+                ...state,update:action.payload
             }
         default:
             return state;            

@@ -2,9 +2,10 @@ import React, { Component } from 'react';
 import { Form, Input, Button } from "antd";
 import 'antd/dist/antd.css';
 import { connect } from 'react-redux';
-import { createEmployee,updateEmployees } from "../actions/employeeActions";
+import { createEmployee,updateEmployees,fetchEmployees } from "../actions/employeeActions";
 
 import PropTypes from 'prop-types';
+import { async } from 'q';
 
 class CreateEmployee extends Component {
   constructor(props){
@@ -20,21 +21,17 @@ class CreateEmployee extends Component {
     // this.props.fetchEmployees();
   }
   componentDidMount=()=>{
-  //   this.setState({
-  //     employee_age:this.props.data?this.props.data.employee_age:"",
-  //     employee_name:this.props.data?this.props.data.employee_name:"",
-  //     employee_salary:this.props.data?this.props.data.employee_salary:""
 
-  // });
-    // this.props.fetchEmployees();
   }
-  updateData=()=> {
+  updateData=async()=> {
       let data={
-        employee_name:this.state.employee_name?this.state.employee_name:"",
-        employee_age:this.state.employee_age?this.state.employee_age:"",
-        employee_salary:this.state.employee_salary?this.state.employee_salary:"",
+        name:this.state.employee_name?this.state.employee_name:"",
+        age:this.state.employee_age?this.state.employee_age:"",
+        salary:this.state.employee_salary?this.state.employee_salary:"",
       }
-      this.props.updateEmployees(this.props.data.id,data)
+      await this.props.updateEmployees(this.props.data.id,data);
+      // this.props.fetchEmployees();
+      this.props.cancel();
   }
 
   onChange=e=>{
@@ -43,26 +40,21 @@ class CreateEmployee extends Component {
     });
   }
 
-  handleSubmit=()=>{
+  handleSubmit=async()=>{
     const employeeInfo={
-      employee_name:this.state.employee_name?this.state.employee_name:"",
-      employee_age:this.state.employee_age?this.state.employee_age:"",
-      employee_salary:this.state.employee_salary?this.state.employee_salary:"",
+      name:this.state.employee_name?this.state.employee_name:"",
+      age:this.state.employee_age?this.state.employee_age:"",
+      salary:this.state.employee_salary?this.state.employee_salary:"",
       // employee_profile:""
     }
     // console.log(employeeInfo);
-    this.props.createEmployee(employeeInfo);
+    await this.props.createEmployee(employeeInfo);
+    this.props.cancel();
 
   }
  
   render() {
-//    let data=[ ...this.state.employees];
-   let create="http://dummy.restapiexample.com/api/v1/create";
-   let update="http://dummy.restapiexample.com/api/v1/update/21";
-   let delete1="http://dummy.restapiexample.com/api/v1/update/2";
-   let find="	http://dummy.restapiexample.com/api/v1/employee/1";
    let {employee_name,employee_age,employee_salary}=this.state;
-   console.log(this.props.data,this.state.employee_salary);
     return (
       // <Provider store={store}>
       <div style={{paddingTop:"30px",paddingBottom:"10px",paddingLeft:"30px", paddingRight:"30px"}}>
@@ -70,7 +62,7 @@ class CreateEmployee extends Component {
             <Form.Item>
                 <Input
                   // prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                  value={this.state.employee_name?this.state.employee_name:this.props.data?this.props.data.employee_name:""}
+                  value={this.state.employee_name?this.state.employee_name:""}
                   // value={this.props.data?this.props.data.employee_name:this.state.employee_name}
                   placeholder="Employee Name"
                   name="employee_name"
@@ -81,7 +73,7 @@ class CreateEmployee extends Component {
                 <Input
                   // prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
                   name="employee_age"
-                  value={this.state.employee_age?this.state.employee_age:this.props.data?this.props.data.employee_age:""}
+                  value={this.state.employee_age?this.state.employee_age:""}
                   // value={this.props.data?this.props.data.employee_age:this.state.employee_age}
                   placeholder="Age"
                   onChange={this.onChange}
@@ -92,7 +84,7 @@ class CreateEmployee extends Component {
                   // prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
                   prefix="$"
                   name="employee_salary"
-                  value={this.state.employee_salary?this.state.employee_salary:this.props.data?this.props.data.employee_salary:""}
+                  value={this.state.employee_salary?this.state.employee_salary:""}
                   // value={this.props.data?this.props.data.employee_salary:this.state.employee_salary?this.state.employee_salary:""}
                   placeholder="Salary"
                   onChange={this.onChange}
