@@ -10,9 +10,9 @@ class CreateEmployee extends Component {
   constructor(props){
     super(props);
     this.state={
-        // employee_age:this.props.data?this.props.data.employee_age:"",
-        // employee_name:this.props.data?this.props.data.employee_name:"",
-        // employee_salary:this.props.data?this.props.data.employee_salary:""
+        employee_age:this.props.data?this.props.data.employee_age:"",
+        employee_name:this.props.data?this.props.data.employee_name:"",
+        employee_salary:this.props.data?this.props.data.employee_salary:""
 
     }
   }

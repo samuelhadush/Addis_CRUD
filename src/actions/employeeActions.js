@@ -38,7 +38,7 @@ export const deleteEmployees=(id)=>dispatch=>{
     .then(res => console.log(res.data,res.status));
 }
 export const updateEmployees=(id,employee)=>dispatch=>{
-    console.log("||>----------------------------------<||","Update Action",id, employee)
+    console.log("||>----------------------------------<||","Update Action",id, employee);
     axios.put('http://dummy.restapiexample.com/api/v1/update/'+id, employee)
     .then(res => console.log(res.data)).catch(err=>console.log(err,"---------------------------------------"));
 }
